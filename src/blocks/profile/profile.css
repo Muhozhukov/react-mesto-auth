@@ -1,0 +1,27 @@
+@import url(./__flex-container/profile__flex-container.css);
+@import url(./__image/profile__image.css);
+@import url(./__info/profile__info.css);
+@import url(./__name/profile__name.css);
+@import url(./__profession/profile__profession.css);
+@import url(./__edit-button/profile__edit-button.css);
+@import url(./__edit-button-image/profile__edit-button-image.css);
+@import url(./__add-button/profile__add-button.css);
+@import url(./__add-button-image/profile__add-button-image.css);
+@import url(./__info-container/profile__info-container.css);
+@import url(./__edit-avatar-button-cantainer/profile__edit-avatar-button-container.css);
+@import url(./__edit-avatar-button/profile__edit-avatar-button.css);
+@import url(./__image-container/profile__image-container.css);
+.profile {
+  padding-top: 40px;
+  padding-bottom: 51px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+@media screen and (max-width: 710px) {
+  .profile {
+   flex-direction: column;
+  }
+}

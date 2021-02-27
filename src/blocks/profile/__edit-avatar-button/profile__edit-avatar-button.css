@@ -1,0 +1,16 @@
+.profile__edit-avatar-button {
+  background-image: url("../../../images/Vector.svg");
+  display: none;
+  background-color: inherit;
+  border: none;
+  position: relative;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 26px;
+  width: 26px;
+  outline:none;
+}
+.profile__edit-avatar-button:hover {
+  cursor: pointer;
+}
