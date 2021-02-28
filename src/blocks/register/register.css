@@ -1,0 +1,22 @@
+@import './__title/register__title.css';
+@import './__form/register__form.css';
+@import './__input/register__input.css';
+@import './__link/register__link.css';
+@import './__signup/register__signup.css';
+@import './__signup-text/register__signup-text.css';
+@import './__signup-link/register__signup-link.css';
+.register {
+    max-width: 882px;
+    display: flex;
+    margin: 0 auto;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    align-items: center;
+}
+
+@media screen and (max-width: 950px) {
+    .register {
+        max-width: 88.125%;
+        }
+    }

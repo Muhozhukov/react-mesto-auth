@@ -14,3 +14,5 @@
 @import url(./blocks/popup/__input/_valid/popup__input_valid.css);
 @import url(./blocks/popup/__input/_invalid/popup__input_invalid.css);
 @import url(./blocks/popup/__error/_visible/popup__error_visible.css);
+@import url(./blocks/login/login.css);
+@import url(./blocks/register/register.css);

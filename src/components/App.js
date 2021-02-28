@@ -1,5 +1,8 @@
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import Login from './Login';
+import Register from './Register';
+import ProtectedRoute from './ProtectedRoute';
 import Main from './Main';
-import Header from './Header';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
 import React from 'react';
@@ -9,17 +12,74 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import * as auth from '../utils/auth.js';
 
 function App() {
 
+  // данные профиля
   const [currentUser, setCurrentUser] = React.useState('#');
+
+  // попапы
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState({});
   const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
-  const [cards, setCards] = React.useState([]);
 
+  // карточки
+  const [selectedCard, setSelectedCard] = React.useState({});
+  const [cards, setCards] = React.useState([]);
+  
+  // данные пользователя
+  const initialData = {
+    email: ''
+  }
+  // авторизация
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [data, setData] = React.useState(initialData);
+  const history = useHistory();
+
+  // проверка токена
+  const tokenCheck = React.useCallback(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      // Получаем данные пользователя
+      auth.getContent(jwt)
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+            setData({
+              email: res.data.email
+            })
+            history.push('/cards');
+          }
+        })
+        .catch(() => history.push('/login'));
+    }
+  }, [history])
+
+  // // Метод обработки логина
+  // const handleLogin = (email, password) => {
+  //   return auth.authorize(email, password).then(res => {
+  //     // Секция для обработки ошибок запроса
+  //     if (res.token) {
+  //       setLoggedIn(true);
+  //       // Записываем полученный jwt токен в локальное хранилище
+  //       localStorage.setItem('jwt', res.token);
+  //       tokenCheck();
+  //       history.push('/cards');
+  //     };
+  //   });
+  // }
+
+  // logout пользователя
+  const handleSignOut = () => {
+    localStorage.removeItem('jwt');
+    setData(initialData);
+    setLoggedIn(false);
+    history.push('/signin');
+  }
+
+  // клики по кнопкам
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
   }
@@ -29,16 +89,18 @@ function App() {
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
   }
+  function handleCardClick(data) {
+    setSelectedCard(data);
+    setIsImagePopupOpen(true);
+  }
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsImagePopupOpen(false);
   }
-  function handleCardClick(data) {
-    setSelectedCard(data);
-    setIsImagePopupOpen(true);
-  }
+
+  // обновление информации о профиле
   function handleUpdateUser(data) {
     api.editUserInfo(data)
     .then((res) => {
@@ -57,6 +119,8 @@ function App() {
       console.log(err);
     });
   }
+
+  // добавление карточки
   function handleAddPlaceSubmit(data) {
     api.postNewCard(data)
     .then((res) => {
@@ -66,10 +130,10 @@ function App() {
       console.log(err);
     });
   }
+
   //Постановка лайка карточке
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
-
     if (!isLiked) {
       api.likeToCard(card._id)
       .then((newCard) => {
@@ -90,6 +154,7 @@ function App() {
       }); 
     }
   }
+
   //Удаление карточки
   function handleCardDelete(card) {
     const cardIsMine = card.owner._id === currentUser._id;
@@ -133,11 +198,25 @@ function App() {
       });
   }, [])
 
+  // При рендере компонента запускаем метод для проверки наличия токена
+  React.useEffect(() => {
+    tokenCheck();
+  }, [tokenCheck])
+
   return (
+    <Switch>
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header  />
-        <Main onEditProfile={handleEditProfileClick} 
+        <Route path="/signin">
+          <Login tokenCheck={tokenCheck} setLoggedIn={setLoggedIn} />
+        </Route>
+        <Route path="/signup">
+          <Register onClose={closeAllPopups} />
+        </Route>
+        <ProtectedRoute 
+          path="/cards" 
+          loggedIn={loggedIn}
+          onEditProfile={handleEditProfileClick} 
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
           onCardClick={(data) => handleCardClick(data)}
@@ -145,15 +224,22 @@ function App() {
           setCards={(data) => setCards(data)}
           onCardLike={handleCardLike}
           onCardDelete={handleCardDelete}
-          />
+          signout={handleSignOut}
+          email={data.email}
+          component={Main}> 
+        </ProtectedRoute>
         <Footer />
         <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
         <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
         <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} />
         <PopupWithForm title="Вы уверены" name="delete-image" />
         <ImagePopup onClose={closeAllPopups} isOpen={isImagePopupOpen} card={selectedCard} />
+        <Route exact path="/">
+          {loggedIn ? <Redirect to="/cards" /> : <Redirect to="/signin" />}
+        </Route>
       </div>
     </CurrentUserContext.Provider>
+    </Switch>
   );
 }
 

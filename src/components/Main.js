@@ -1,17 +1,19 @@
 import React from 'react';
 import addButtonPath from '../images/add__button.svg';
 import profileEditButtonPath from '../images/edit__button.svg';
+import Header from './Header';
 import Card from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 function Main(props) {
   const userInfo = React.useContext(CurrentUserContext);
-
-
-
-
   
   return (
+    <>
+    <Header>
+      <p className="header__email">{props.email}</p>
+      <button className="header__logout-button" onClick={props.signout}>Выйти</button>
+    </Header>
     <main className="page__container">
     <section className="profile">
       <div className="profile__flex-container">
@@ -44,6 +46,7 @@ function Main(props) {
         onCardImageClick={props.onCardImageClick} />))}
     </section>
   </main>
+  </>
   );
 }
 

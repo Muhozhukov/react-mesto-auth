@@ -1,8 +1,11 @@
 @import url(./__logo/header__logo.css);
-
+@import url(./__link/header__link.css);
+@import url(./__info/header__info.css);
+@import url(./__email/header__email.css);
+@import url(./__logout-button/header__logout-button.css);
 .header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(84, 84, 84, 0.7);
   margin: 0 auto;
