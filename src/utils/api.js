@@ -12,18 +12,12 @@ class Api {
       headers: this.headers
     })
     .then(this._handleOriginalResponse)
-    .catch((err) => {
-      console.log(err)
-    })
   }
   getUserInfo() {
     return fetch(`${this.baseUrl}/users/me`, {
       headers: this.headers
     })
     .then(this._handleOriginalResponse)
-    .catch((err) => {
-      console.log(err)
-    })
   }
   editUserInfo(profileInfo) {
     return fetch(`${this.baseUrl}/users/me`, {
@@ -35,9 +29,6 @@ class Api {
       })
     })
     .then(this._handleOriginalResponse)
-    .catch((err) => {
-      console.log(err)
-    })
   }
   postNewCard(newCard) {
     return fetch(`${this.baseUrl}/cards`, {
@@ -49,9 +40,6 @@ class Api {
       })
     })
     .then(this._handleOriginalResponse)
-    .catch((err) => {
-      console.log(err)
-    })
   }
   likeToCard(cardId) {
     return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
@@ -59,9 +47,6 @@ class Api {
       headers: this.headers
     })
     .then(this._handleOriginalResponse)
-    .catch((err) => {
-      console.log(err)
-    })
   }
   deleteLikeToCard(cardId) {
     return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
@@ -69,9 +54,6 @@ class Api {
       headers: this.headers
     })
     .then(this._handleOriginalResponse)
-    .catch((err) => {
-      console.log(err)
-    })
   }
   deleteCard(cardId) {
     return fetch(`${this.baseUrl}/cards/${cardId}`, {
@@ -79,9 +61,6 @@ class Api {
       headers: this.headers
     })
     .then(this._handleOriginalResponse)
-    .catch((err) => {
-      console.log(err)
-    })
   }
   changeProfileAvatar(newAvatar) {
     return fetch(`${this.baseUrl}/users/me/avatar`, {
@@ -92,9 +71,6 @@ class Api {
       })
     })
     .then(this._handleOriginalResponse)
-    .catch((err) => {
-      console.log(err)
-    })
   }
 }
 //123

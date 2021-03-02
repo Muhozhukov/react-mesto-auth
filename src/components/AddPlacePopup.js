@@ -2,7 +2,7 @@ import React from 'react';
 import PopupWithForm from './PopupWithForm';
 
 function AddPlacePopup(props) {
-    
+
     const [name, setName] = React.useState('');
     const [url, setUrl] = React.useState('');
 
@@ -23,7 +23,6 @@ function AddPlacePopup(props) {
         });
         setName('');
         setUrl('');
-        props.onClose();
       }
     return (
         <PopupWithForm onSubmit={handleSubmit} onClose={props.onClose} isOpen={props.isOpen} title="Новое место" name="edit-card">

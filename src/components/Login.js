@@ -1,19 +1,12 @@
 import React from 'react';
 import Header from './Header';
 import { Link, useHistory } from 'react-router-dom';
-import * as auth from '../utils/auth.js';
 import InfoTooltip from './InfoTooltip';
-import failPic from '../images/signup-fail.svg';
 
   function Login(props) {
 
-    // попап с уведомлением о входе
-    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
-    const [toolTipTitle, setTooltipTitle] = React.useState('');
-    const [tolltipPic, setTooltipPic] = React.useState('')
-
     function closeInfoTooltip() {
-      setIsInfoTooltipOpen(false)
+      props.setTooltipIsOpen(false)
     }
     const initialData = {
       email: '',
@@ -46,21 +39,7 @@ import failPic from '../images/signup-fail.svg';
       }
 
       // Метод обработки логина
-      auth.authorize(data.email, data.password)
-        .then((res) => {
-          // Секция для обработки ошибок запроса
-          if (res.token) {
-              props.setLoggedIn(true);
-              // Записываем полученный jwt токен в локальное хранилище
-              localStorage.setItem('jwt', res.token);
-              props.tokenCheck();
-              history.push('/cards');
-          } else {
-              setTooltipPic(failPic)
-              setTooltipTitle('Что-то пошло не так! Попробуйте ещё раз.');
-              setIsInfoTooltipOpen(true);
-            };
-        });
+      props.onLogin(data.email, data.password);
     }
     return (
       <>
@@ -77,7 +56,12 @@ import failPic from '../images/signup-fail.svg';
             </div>
           </form>
         </div>
-        <InfoTooltip title={toolTipTitle} name="infotooltip" isOpen={isInfoTooltipOpen} image={tolltipPic} onClose={closeInfoTooltip} />
+        <InfoTooltip
+          title={props.toolTipTitle}
+          name="infotooltip"
+          isOpen={props.isInfoTooltipOpen}
+          image={props.tolltipPic}
+          onClose={closeInfoTooltip} />
       </>
     );
 }

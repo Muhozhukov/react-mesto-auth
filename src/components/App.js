@@ -13,6 +13,8 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import * as auth from '../utils/auth.js';
+import failPic from '../images/signup-fail.svg';
+import successPic from '../images/signup-success.svg';
 
 function App() {
 
@@ -25,10 +27,17 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
 
+  // попап с уведомлением о входе
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
+  const [toolTipTitle, setTooltipTitle] = React.useState('');
+  const [tolltipPic, setTooltipPic] = React.useState('')
+
+
+
   // карточки
   const [selectedCard, setSelectedCard] = React.useState({});
   const [cards, setCards] = React.useState([]);
-  
+
   // данные пользователя
   const initialData = {
     email: ''
@@ -57,20 +66,42 @@ function App() {
     }
   }, [history])
 
-  // // Метод обработки логина
-  // const handleLogin = (email, password) => {
-  //   return auth.authorize(email, password).then(res => {
-  //     // Секция для обработки ошибок запроса
-  //     if (res.token) {
-  //       setLoggedIn(true);
-  //       // Записываем полученный jwt токен в локальное хранилище
-  //       localStorage.setItem('jwt', res.token);
-  //       tokenCheck();
-  //       history.push('/cards');
-  //     };
-  //   });
-  // }
+  // Метод обработки логина
+  const handleLogin = (email, password) => {
+    return auth.authorize(email, password)
+    .then(res => {
+      // Секция для обработки ошибок запроса
+      if (res.token) {
+        setLoggedIn(true);
+        // Записываем полученный jwt токен в локальное хранилище
+        localStorage.setItem('jwt', res.token);
+        tokenCheck();
+        history.push('/cards');
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      setTooltipPic(failPic)
+      setTooltipTitle('Что-то пошло не так! Попробуйте ещё раз.');
+      setIsInfoTooltipOpen(true);
+    });
+  }
 
+  // Метод регистрации
+    const handleRegister = (email, password) => {
+      return auth.register(email, password)
+      .then((res) => {
+          setTooltipPic(successPic)
+          setTooltipTitle('Вы успешно зарегистрировались');
+          setIsInfoTooltipOpen(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        setTooltipPic(failPic);
+        setTooltipTitle('Что-то пошло не так! Попробуйте ещё раз.');
+        setIsInfoTooltipOpen(true);
+      })
+    }
   // logout пользователя
   const handleSignOut = () => {
     localStorage.removeItem('jwt');
@@ -104,7 +135,8 @@ function App() {
   function handleUpdateUser(data) {
     api.editUserInfo(data)
     .then((res) => {
-      setCurrentUser(res)
+      setCurrentUser(res);
+      closeAllPopups();
     })
     .catch((err) => {
       console.log(err);
@@ -113,7 +145,8 @@ function App() {
   function handleUpdateAvatar(data) {
     api.changeProfileAvatar(data)
     .then((res) => {
-      setCurrentUser(res)
+      setCurrentUser(res);
+      closeAllPopups();
     })
     .catch((err) => {
       console.log(err);
@@ -124,7 +157,8 @@ function App() {
   function handleAddPlaceSubmit(data) {
     api.postNewCard(data)
     .then((res) => {
-      setCards([res, ...cards])
+      setCards([res, ...cards]);
+      closeAllPopups();
     })
     .catch((err) => {
       console.log(err);
@@ -151,7 +185,7 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
-      }); 
+      });
     }
   }
 
@@ -168,7 +202,7 @@ function App() {
             return true;
           }
         }
-        const deletedCard = cards.filter(item => cardFilter(item)); 
+        const deletedCard = cards.filter(item => cardFilter(item));
           setCards(deletedCard)
       })
       .catch((err) => {
@@ -208,15 +242,26 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Route path="/signin">
-          <Login tokenCheck={tokenCheck} setLoggedIn={setLoggedIn} />
+          <Login onLogin={handleLogin}
+          setTooltipIsOpen={setIsInfoTooltipOpen}
+          toolTipTitle={toolTipTitle}
+          isInfoTooltipOpen={isInfoTooltipOpen}
+          tolltipPic={tolltipPic}
+          tokenCheck={tokenCheck}
+          setLoggedIn={setLoggedIn} />
         </Route>
         <Route path="/signup">
-          <Register onClose={closeAllPopups} />
+          <Register onRegister={handleRegister}
+          setTooltipIsOpen={setIsInfoTooltipOpen}
+          toolTipTitle={toolTipTitle}
+          isInfoTooltipOpen={isInfoTooltipOpen}
+          tolltipPic={tolltipPic}
+          onClose={closeAllPopups} />
         </Route>
-        <ProtectedRoute 
-          path="/cards" 
+        <ProtectedRoute
+          path="/cards"
           loggedIn={loggedIn}
-          onEditProfile={handleEditProfileClick} 
+          onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
           onCardClick={(data) => handleCardClick(data)}
@@ -226,7 +271,7 @@ function App() {
           onCardDelete={handleCardDelete}
           signout={handleSignOut}
           email={data.email}
-          component={Main}> 
+          component={Main}>
         </ProtectedRoute>
         <Footer />
         <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />

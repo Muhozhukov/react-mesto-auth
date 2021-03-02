@@ -1,18 +1,12 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import * as auth from '../utils/auth.js';
 import Header from './Header';
 import InfoTooltip from './InfoTooltip';
-import failPic from '../images/signup-fail.svg';
-import successPic from '../images/signup-success.svg';
 
 function Register(props) {
-  // попап с уыедомлением о регистрации
-  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
-  const [toolTipTitle, setTooltipTitle] = React.useState('');
-  const [tolltipPic, setTooltipPic] = React.useState('')
+
   function closeInfoTooltip() {
-    setIsInfoTooltipOpen(false)
+    props.setTooltipIsOpen(false)
   }
   // данные пользователя
   const initialData = {
@@ -45,25 +39,8 @@ function Register(props) {
     if (!data.password || !data.email) {
       return;
     }
-    auth.register(data.email, data.password)
-      .then((res) => {
-        // console.log(res)
-        resetForm();
-        if (res === undefined) {
-          setTooltipPic(failPic)
-          setTooltipTitle('Что-то пошло не так! Попробуйте ещё раз.');
-          setIsInfoTooltipOpen(true);
-        } else {
-          setTooltipPic(successPic)
-          setTooltipTitle('Вы успешно зарегистрировались');
-          setIsInfoTooltipOpen(true);
-        }
-      })
-      // Перенаправляем пользователя на страницу логина при успешной регистрации
-      // .then(() => history.push('/signin'))
-      .catch((e) => {
-        console.log(e)
-      })
+    props.onRegister(data.email, data.password);
+    resetForm();
   }
 
   return (
@@ -85,7 +62,12 @@ function Register(props) {
           <Link to="/signin" className="register__signup-link">Войти</Link>
         </div>
       </div>
-      <InfoTooltip title={toolTipTitle} name="infotooltip" isOpen={isInfoTooltipOpen} image={tolltipPic} onClose={redirect} />
+      <InfoTooltip
+        title={props.toolTipTitle}
+        name="infotooltip"
+        isOpen={props.isInfoTooltipOpen}
+        image={props.tolltipPic}
+        onClose={redirect} />
     </>
   );
 }

@@ -5,11 +5,11 @@ import PopupWithForm from './PopupWithForm';
 
 function EditProfilePopup(props) {
     const userInfo = React.useContext(CurrentUserContext);
-    
+
     React.useEffect(() => {
         setName(userInfo.name || '');
         setDescription(userInfo.about || '');
-      }, [userInfo]); 
+      }, [userInfo]);
     const [name, setName] = React.useState('');
     const [description, setDescription] = React.useState('');
 
@@ -28,8 +28,7 @@ function EditProfilePopup(props) {
           name,
           profession: description,
         });
-        props.onClose();
-      } 
+      }
 return (
     <PopupWithForm onSubmit={handleSubmit} isOpen={props.isOpen} onClose={props.onClose}>
         <label className="popup__lable">
