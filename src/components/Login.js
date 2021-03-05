@@ -32,14 +32,13 @@ import InfoTooltip from './InfoTooltip';
     const handleSubmit = (e) => {
       // Отменяем базовые действия при сабмите формы
       e.preventDefault();
-      resetForm();
       // Если поле username или password пустое, то ничего не делаем
       if (!data.email || !data.password) {
         return;
       }
-
       // Метод обработки логина
       props.onLogin(data.email, data.password);
+      resetForm();
     }
     return (
       <>
@@ -56,12 +55,6 @@ import InfoTooltip from './InfoTooltip';
             </div>
           </form>
         </div>
-        <InfoTooltip
-          title={props.toolTipTitle}
-          name="infotooltip"
-          isOpen={props.isInfoTooltipOpen}
-          image={props.tolltipPic}
-          onClose={closeInfoTooltip} />
       </>
     );
 }

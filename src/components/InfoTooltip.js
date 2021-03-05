@@ -1,6 +1,5 @@
 import React from 'react';
 import closePopupImagePath from '../images/close__icon.svg';
-import signupPic from '../images/signup-success.svg';
 function InfoTooltip(props) {
     return(
         <div className={`popup popup_type_${props.isOpen && props.name} ${props.isOpen && 'popup_opened'}`}>

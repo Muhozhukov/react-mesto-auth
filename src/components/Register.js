@@ -1,13 +1,10 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Header from './Header';
-import InfoTooltip from './InfoTooltip';
+
 
 function Register(props) {
 
-  function closeInfoTooltip() {
-    props.setTooltipIsOpen(false)
-  }
   // данные пользователя
   const initialData = {
     email: '',
@@ -27,10 +24,6 @@ function Register(props) {
   // сброс формы
   const resetForm = () => {
     setData(initialData);
-  }
-  const redirect = () => {
-    closeInfoTooltip()
-    history.push('/signin');
   }
 
   const handleSubmit = (e) => {
@@ -62,12 +55,6 @@ function Register(props) {
           <Link to="/signin" className="register__signup-link">Войти</Link>
         </div>
       </div>
-      <InfoTooltip
-        title={props.toolTipTitle}
-        name="infotooltip"
-        isOpen={props.isInfoTooltipOpen}
-        image={props.tolltipPic}
-        onClose={redirect} />
     </>
   );
 }

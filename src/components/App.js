@@ -13,6 +13,7 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import * as auth from '../utils/auth.js';
+import InfoTooltip from './InfoTooltip';
 import failPic from '../images/signup-fail.svg';
 import successPic from '../images/signup-success.svg';
 
@@ -109,7 +110,14 @@ function App() {
     setLoggedIn(false);
     history.push('/signin');
   }
-
+  function closeInfoTooltip() {
+    setIsInfoTooltipOpen(false)
+  }
+  // переадресация по кнопке закрытия попапа
+  const redirect = () => {
+    closeInfoTooltip()
+    history.push('/signin');
+  }
   // клики по кнопкам
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -244,18 +252,12 @@ function App() {
         <Route path="/signin">
           <Login onLogin={handleLogin}
           setTooltipIsOpen={setIsInfoTooltipOpen}
-          toolTipTitle={toolTipTitle}
-          isInfoTooltipOpen={isInfoTooltipOpen}
-          tolltipPic={tolltipPic}
           tokenCheck={tokenCheck}
           setLoggedIn={setLoggedIn} />
         </Route>
         <Route path="/signup">
           <Register onRegister={handleRegister}
           setTooltipIsOpen={setIsInfoTooltipOpen}
-          toolTipTitle={toolTipTitle}
-          isInfoTooltipOpen={isInfoTooltipOpen}
-          tolltipPic={tolltipPic}
           onClose={closeAllPopups} />
         </Route>
         <ProtectedRoute
@@ -274,11 +276,29 @@ function App() {
           component={Main}>
         </ProtectedRoute>
         <Footer />
-        <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
-        <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
-        <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} />
+        <EditProfilePopup
+          onUpdateUser={handleUpdateUser}
+          isOpen={isEditProfilePopupOpen}
+          onClose={closeAllPopups} />
+        <EditAvatarPopup
+          onUpdateAvatar={handleUpdateAvatar}
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups} />
+        <AddPlacePopup
+          onAddPlace={handleAddPlaceSubmit}
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups} />
         <PopupWithForm title="Вы уверены" name="delete-image" />
-        <ImagePopup onClose={closeAllPopups} isOpen={isImagePopupOpen} card={selectedCard} />
+        <ImagePopup
+          onClose={closeAllPopups}
+          isOpen={isImagePopupOpen}
+          card={selectedCard} />
+        <InfoTooltip
+          title={toolTipTitle}
+          name="infotooltip"
+          isOpen={isInfoTooltipOpen}
+          image={tolltipPic}
+          onClose={redirect} />
         <Route exact path="/">
           {loggedIn ? <Redirect to="/cards" /> : <Redirect to="/signin" />}
         </Route>
