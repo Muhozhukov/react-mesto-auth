@@ -10,10 +10,12 @@
     flex-direction: column;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
+    height: calc(100vh - 120px - 148px);
 }
 
 @media screen and (max-width: 950px) {
     .login {
         max-width: 88.125%;
+        height: calc(100vh - 101px - 85px);
         }
     }

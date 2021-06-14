@@ -13,6 +13,7 @@
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     align-items: center;
+    height: calc(100vh - 120px - 148px);
 }
 
 @media screen and (max-width: 950px) {

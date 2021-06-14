@@ -63,7 +63,7 @@ function App() {
             history.push('/cards');
           }
         })
-        .catch(() => history.push('/login'));
+        .catch(() => history.push('/signin'));
     }
   }, [history])
 
